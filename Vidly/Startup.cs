@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vidly.Data;
+using AutoMapper;
+using Vidly.Helpers;
 
 namespace Vidly
 {
@@ -34,6 +36,7 @@ namespace Vidly
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddAutoMapper(typeof(MappingProfile).Assembly);
             services.AddControllersWithViews();
         }
 
