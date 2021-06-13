@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Vidly.Data;
 using Vidly.Dtos;
 using Vidly.Models;
@@ -29,7 +30,10 @@ namespace Vidly.Controllers.Api
 
         public IEnumerable<MovieDto> GetMovies()
         {
-            return _context.Movies.ToList().Select(_mapper.Map<Movie, MovieDto>);
+            return _context.Movies
+                .Include(m => m.Genre)
+                .ToList()
+                .Select(_mapper.Map<Movie, MovieDto>);
         }
 
         public IActionResult GetMovie(int id)

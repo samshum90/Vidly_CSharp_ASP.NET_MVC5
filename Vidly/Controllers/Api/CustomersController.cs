@@ -11,6 +11,7 @@ using Vidly.Data;
 using Vidly.Dtos;
 using Vidly.Models;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vidly.Controllers.Api
 {
@@ -30,7 +31,10 @@ namespace Vidly.Controllers.Api
         // GET /api/customers/1
         public IActionResult GetCustomers()
         {
-            var customerDtos = _context.Customers.ToList().Select(_mapper.Map<Customer, CustomerDto>);
+            var customerDtos = _context.Customers
+                .Include(c => c.MembershipType)
+                .ToList()
+                .Select(_mapper.Map<Customer, CustomerDto>);
             
             return Ok(customerDtos);    
         }
@@ -63,7 +67,7 @@ namespace Vidly.Controllers.Api
         }
 
         // PUT /api/customers/1
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult UpdateCustomer(int id, CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
@@ -82,7 +86,7 @@ namespace Vidly.Controllers.Api
         }
 
         // DELETE /api/customers/1
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult DeleteCustomer(int id)
         {
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
